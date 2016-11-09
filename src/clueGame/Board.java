@@ -7,7 +7,6 @@ import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,9 +34,7 @@ public class Board
   public static final int MAX_BOARD_SIZE = 50;
   private BoardCell[][] board = new BoardCell[50][50];
   private Map<Character, String> legend = new HashMap<Character, String>();
-  private Map<BoardCell, Set<BoardCell>> adjMtx;
   private Set<BoardCell> targets = null;
-  private Set<BoardCell> visited;
   private ArrayList<String> peopleNames;
   private ArrayList<String> weaponNames;
   private ArrayList<String> roomNames;
@@ -76,9 +73,7 @@ public class Board
   public void initialize()
   {
     loadConfigFiles();
-    
-    calcAdjacencies();
-    
+        
     addMouseListener(this);
     
     selectAnswer();
@@ -210,6 +205,7 @@ public class Board
   /**
    * Basic error checking on weapon config; loads weapons. 
    * @throws FileNotFoundException
+   * TODO: Remove once server has this
    */
   public void loadWeaponConfig()
     throws FileNotFoundException
@@ -227,46 +223,62 @@ public class Board
     weaponsConfig.close();
   }
   
-  public void calcAdjacencies()
+  public Set<BoardCell> calcAdjacencies(int row, int col)
   {
-    this.adjMtx = new HashMap<BoardCell, Set<BoardCell>>();
-    for (int row = 0; row < this.numRows; row++) {
-      for (int col = 0; col < this.numColumns; col++) {
-        addAdjacencies(row, col);
-      }
-    }
-  }
-  
-  private void addAdjacencies(int row, int col)
-  {
-    Set<BoardCell> neighbors = new HashSet<BoardCell>();
-    
-    BoardCell cell = this.board[row][col];
-    if (cell.isWalkway())
-    {
-      checkNeighbor(row - 1, col, neighbors);
-      
+	  Set<BoardCell> neighbors = new HashSet<BoardCell>();
+	  BoardCell cell = this.board[row][col];
+	  if(cell.isBlank())
+		  return null;
+	  checkNeighbor(row - 1, col, neighbors);
       checkNeighbor(row + 1, col, neighbors);
-      
       checkNeighbor(row, col - 1, neighbors);
-      
       checkNeighbor(row, col + 1, neighbors);
-    }
-    this.adjMtx.put(cell, neighbors);
-  }
-  
+      System.out.println(cell.getInitial());
+	  if(cell.getInitial() == 'K')
+	  {
+		  checkNeighbor(0,0, neighbors);
+	  }
+	  else if (cell.getInitial() == 'S')
+	  {
+		  checkNeighbor(4,4, neighbors);
+	  }
+	  else if (cell.getInitial() == 'O')
+	  {
+		  checkNeighbor(4,0, neighbors);
+	  }
+	  else if (cell.getInitial() == 'C')
+	  {
+		  checkNeighbor(0,4, neighbors);
+	  }
+	  return neighbors;
+	}
+
   private void checkNeighbor(int row, int col, Set<BoardCell> neighbors)
   {
 	  
     if ((row < 0) || (col < 0) || (row >= this.numRows) || (col >= this.numColumns)) {
       return;
     }
+    System.out.println("Checking "+row+","+col);
     BoardCell cell = this.board[row][col];
-    //Check to see if player is already on the cell
     
-    if (cell.isWalkway() || cell.isRoom())
+    //Check to see if player is already on the cell
+    for (Player p: players)
     {
-      neighbors.add(cell);
+    	if(p.getColumn() == col && p.getRow() == row)
+    	{
+    		System.out.println("Player there");
+    		return;
+    	}
+    }
+    if (cell.isBlank())
+    {
+    	System.out.println("Blank room");
+		return;
+    }
+    else  //Walkway or Room
+    {
+    	neighbors.add(cell);
     }
   }
   
@@ -369,30 +381,13 @@ public class Board
   }
   
   public void calcTargets(int row, int col)
-  {
-    BoardCell startNode = this.board[row][col];
-    
+  {    
     this.targets = new HashSet<BoardCell>();
-    this.visited = new HashSet<BoardCell>();
-    
-    this.visited.add(startNode);
-    
-    findAllTargets(startNode);
-  }
-  
-  /**
-   * Find targets that can be moved to from current location.
-   */
-  public void findAllTargets(BoardCell thisCell)
-  {
-    Set<BoardCell> adjList = (Set)this.adjMtx.get(thisCell);
-    for (BoardCell adjCell : adjList) {
-      if (!this.visited.contains(adjCell))
-      {
-          this.targets.add(adjCell);
+    Set<BoardCell> targets = calcAdjacencies(row, col);
+    for (BoardCell t : targets) {
+            this.targets.add(t);
       }
-    }
-  } 
+  }
   
   /**
    * Make an accusation for your turn.
