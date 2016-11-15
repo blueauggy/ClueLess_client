@@ -1,11 +1,13 @@
 package clueGame;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 /**
  * 
- * Board cell is the class that displays the actual gird layout of the boards.  Coloring of board pieces happens here.
+ * Board cell is the class that displays the actual gird layout of the boards.  
+ * Coloring of board pieces happens here.
  * 
  */
 public class BoardCell
@@ -28,10 +30,7 @@ public class BoardCell
     this.x = (col * PIECE_SIZE);
     this.y = (row * PIECE_SIZE);
     
-    this.displayName = false;
-    if ((parameters.length() == 2) && (parameters.charAt(1) == 'N')) {
-        this.displayName = true;
-    }
+    this.displayName = true;
   }
   
   /**
@@ -44,6 +43,7 @@ public class BoardCell
   {
     if (this.highlighted) {
       g.setColor(Color.CYAN);
+      
     } else if (isWalkway()) {
       g.setColor(Color.YELLOW);
     } else if (isBlank()) {
@@ -57,10 +57,11 @@ public class BoardCell
       g.setColor(Color.black);
       g.drawRect(this.x, this.y, PIECE_SIZE, PIECE_SIZE);
     }
-    if (this.displayName)
+    if (this.displayName && isRoom())
     {
-      g.setColor(Color.BLUE);
-      g.drawString(Board.getInstance().getRoomName(this.initial).toUpperCase(), this.x, this.y);
+      g.setColor(Color.MAGENTA);
+      g.setFont(new Font("Sans Serif", Font.BOLD, 12));
+      g.drawString(Board.getInstance().getRoomName(this.initial).toUpperCase(), this.x, this.y+PIECE_SIZE/4);
     }
   }
   

@@ -148,21 +148,35 @@ public class Board
    */
   public void loadPeopleConfig() throws FileNotFoundException
   {
-    this.peopleNames = new ArrayList<String>();
-	String line ="Miss Scarlet, 0, 3, red";
-	Player player;
-	//Defining first player as client and rest as computer.
-	this.client = new Player();
-	player = this.client;
-	
-	player.updateAttributes(line);
-	  
 	//TODO: Remove this once server handles cards.
-	this.cards.add(new Card(player.getName(), Card.CardType.PERSON));
-	this.peopleNames.add(player.getName());
-	  
-	this.players.add(player);
+    this.peopleNames = new ArrayList<String>();
+    InputStream is = getClass().getResourceAsStream("/data/CluePeople.txt");
+    Scanner peopleConfig = new Scanner(is);
+    while (peopleConfig.hasNextLine())
+    {
+      String line = peopleConfig.nextLine();
+      Player player;
+      if (this.players.size() == 0)
+      {
+        this.client = new Player();
+        player = this.client;
+      }
+      else
+      {
+        player = new Player();
+      }
+      player.updateAttributes(line);
+      
+      this.cards.add(new Card(player.getName(), Card.CardType.PERSON));
+      this.peopleNames.add(player.getName());
+      
+      this.players.add(player);
+    }
     this.whoseTurn = this.players.size();
+    peopleConfig.close();
+    
+    
+    
   }
   
   /**
@@ -267,13 +281,11 @@ public class Board
     {
     	if(p.getColumn() == col && p.getRow() == row)
     	{
-    		System.out.println("Player there");
     		return;
     	}
     }
     if (cell.isBlank())
     {
-    	System.out.println("Blank room");
 		return;
     }
     else  //Walkway or Room
@@ -301,8 +313,29 @@ public class Board
   
   public void drawPlayers(Graphics2D g)
   {
-    for (Player p : this.players) {
-      p.drawPlayer(g, this);
+    for (Player p1 : this.players) {
+      p1.drawPlayer(g, this);
+    }
+    checkForCollisions(g);
+  }
+  
+  /**
+   * This class is called after drawPlayers and sees if there is two players on a board piece.
+   * It redraws the square and the player icons to incorporate two spots instead of one.
+   */
+  public void checkForCollisions(Graphics2D g)
+  {
+    for (Player p1 : this.players) {
+      for (Player p2: this.players) {
+    	  if (( p1.getName() != p2.getName()) && 
+    		  (p1.getColumn() == p2.getColumn()) && 
+    		  ( p1.getRow() == p2.getRow())) {
+    		  //redraw square on collision
+    		  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
+    		  p1.redrawCollision(g, this, p2.getColor());
+    		  return;
+    	  }
+      }
     }
   }
   
@@ -318,11 +351,17 @@ public class Board
     }
   }
   
+  /**
+   * TODO: Fix back to just this.client after testing is done
+   */
   public void mouseClicked(MouseEvent e)
   {
-    if (!this.client.mustFinish()) {
-      return;
-    }
+    //if (!this.client.mustFinish()) {
+  //    return;
+   // }
+	if (!this.currentPlayer.mustFinish()){
+	  return;
+	}
     BoardCell clicked = findClickedCell(e.getX(), e.getY());
     if (clicked == null)
     {
@@ -330,8 +369,8 @@ public class Board
     }
     else
     {
-      this.client.finishTurn(clicked);
-      
+      //this.client.finishTurn(clicked);
+      this.currentPlayer.finishTurn(clicked);
       highlightTargets(false);
       repaint();
       if (clicked.isRoom())
@@ -340,7 +379,8 @@ public class Board
         GuessDialog dialog = new GuessDialog(roomName);
         dialog.setVisible(true);
         if (dialog.isSubmitted()) {
-          handleGuess(dialog.getGuess(), this.client, clicked);
+          //handleGuess(dialog.getGuess(), this.client, clicked);
+        	handleGuess(dialog.getGuess(), this.currentPlayer, clicked);
         }
       }
     }
@@ -456,7 +496,8 @@ public class Board
   
   public Card handleGuess(Guess guess, Player accusingPlayer, BoardCell clicked)
   {
-  /*  this.gameControl.setGuess(guess.person + " " + guess.room + " " + 
+	  
+    this.gameControl.setGuess(guess.person + " - " + guess.room + " - " + 
       guess.weapon);
     
     movePlayer(guess.person, clicked);
@@ -470,7 +511,12 @@ public class Board
       Player player = (Player)this.players.get(whichPlayer);
       if (player != accusingPlayer)
       {
-        Card result = player.disproveSuggestion(guess);
+    	  System.out.println(player.getName());
+    	  //TODO: This information should be coming from the server when a player asks for cards back.
+    	  Card tmp = new Card("Wrench", Card.CardType.WEAPON);
+    	  this.gameControl.setGuessResult(tmp.getCardName());
+    	  return tmp;
+       /* Card result = player.disproveSuggestion(guess);
         if (result != null)
         {
           for (Player p : this.players) {
@@ -479,11 +525,12 @@ public class Board
           this.gameControl.setGuessResult(result.getCardName());
           
           return result;
-        }
+        }*/
       }
       playersAsked++;
     }
-    this.gameControl.setGuessResult("No new clue");*/
+    this.gameControl.setGuessResult("No new clue");
+    
 	System.out.println("Player guessed ["+guess.person+"] in the ["+guess.room+"] with the ["+guess.weapon+"]");
     return null;
   }
@@ -534,6 +581,11 @@ public class Board
     return this.roomNames;
   }
   
+  public ArrayList<Player> getPlayers()
+  {
+	  return this.players;
+  }
+  
   /**
    * Returns list of the weapons names
    */
@@ -573,6 +625,11 @@ public class Board
   public Set<BoardCell> getTargets()
   {
     return this.targets;
+  }
+  
+  public Player getCurrentPlayer()
+  {
+    return this.currentPlayer;
   }
 
 }

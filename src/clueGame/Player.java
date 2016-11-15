@@ -69,7 +69,8 @@ public class Player
   }
     
   /**
-   * This is the code that draws the small circle and playes it on a board piece. We will want better graphics than this.
+   * This is the code that draws the small circle and plays it on a board piece. 
+   * We will want better graphics than this.
    */
   public void drawPlayer(Graphics2D g, Board board)
   {
@@ -81,6 +82,29 @@ public class Player
     g.fillOval(x + (BoardCell.PIECE_SIZE/4), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
     g.setColor(Color.black);
     g.drawOval(x + (BoardCell.PIECE_SIZE/4), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+
+  }
+  
+  /**
+   * Draws two players on a given square instead of one.
+   */
+  public void redrawCollision(Graphics2D g, Board board, Color p2Color)
+  {
+    int size = BoardCell.PIECE_SIZE;
+    int x = this.column * size;
+    int y = this.row * size;
+    
+    //P1
+    g.setColor(this.color);
+    g.fillOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    g.setColor(Color.black);
+    g.drawOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    
+    //P2
+    g.setColor(p2Color);
+    g.fillOval(x+(BoardCell.PIECE_SIZE/2), y+ (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    g.setColor(Color.black);
+    g.drawOval(x + (BoardCell.PIECE_SIZE/2), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);	 
   }
   
   public void makeMove(Board board)
