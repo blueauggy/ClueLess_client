@@ -30,7 +30,11 @@ public class BoardCell
     this.x = (col * PIECE_SIZE);
     this.y = (row * PIECE_SIZE);
     
-    this.displayName = true;
+    //BEN: Addition of IF statment
+    if(this.initial != 'X' && this.initial != 'W')
+    {
+        this.displayName = true;
+    }
   }
   
   /**
