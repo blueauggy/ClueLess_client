@@ -82,6 +82,10 @@ public class Player
     g.fillOval(x + (BoardCell.PIECE_SIZE/4), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
     g.setColor(Color.black);
     g.drawOval(x + (BoardCell.PIECE_SIZE/4), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    
+    //BEN: Added these lines to display the player name under the icon
+    g.setColor(Color.black);
+    g.drawString(this.getName(), x + (BoardCell.PIECE_SIZE/4-10), y + (BoardCell.PIECE_SIZE-13));
 
   }
   
