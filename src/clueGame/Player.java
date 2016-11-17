@@ -85,14 +85,14 @@ public class Player
     
     //BEN: Added these lines to display the player name under the icon
     g.setColor(Color.black);
-    g.drawString(this.getName(), x + (BoardCell.PIECE_SIZE/4-10), y + (BoardCell.PIECE_SIZE-13));
+    g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
 
   }
   
   /**
    * Draws two players on a given square instead of one.
    */
-  public void redrawCollision(Graphics2D g, Board board, Color p2Color)
+  public void redrawCollision(Graphics2D g, Board board, Player p2)
   {
     int size = BoardCell.PIECE_SIZE;
     int x = this.column * size;
@@ -103,12 +103,16 @@ public class Player
     g.fillOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
     g.setColor(Color.black);
     g.drawOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    g.setColor(Color.black);
+    g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
     
     //P2
-    g.setColor(p2Color);
+    g.setColor(p2.getColor());
     g.fillOval(x+(BoardCell.PIECE_SIZE/2), y+ (BoardCell.PIECE_SIZE/4), size/2, size/2);
     g.setColor(Color.black);
-    g.drawOval(x + (BoardCell.PIECE_SIZE/2), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);	 
+    g.drawOval(x + (BoardCell.PIECE_SIZE/2), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    g.setColor(Color.black);
+    g.drawString(p2.getName(), x + 2, y + (BoardCell.PIECE_SIZE-2));
   }
   
   public void makeMove(Board board)

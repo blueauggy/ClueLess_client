@@ -332,7 +332,7 @@ public class Board
     		  ( p1.getRow() == p2.getRow())) {
     		  //redraw square on collision
     		  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
-    		  p1.redrawCollision(g, this, p2.getColor());
+    		  p1.redrawCollision(g, this, p2);
     		  return;
     	  }
       }
