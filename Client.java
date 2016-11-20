@@ -1,26 +1,30 @@
-
-package client;
-
-import client.ClientServerConnectionStarter;
+import java.io.*;
+import java.net.*;
 
 public class Client {
-    public static String HOST_NAME = "localhost";
-    public static int PORT_NUMBER = 65004;
-    /**
-     * main()
-     * Entry point for the Client application
-     * @param args Command Line arguments
-     */
 
-
- public static void main(String[] args) {
-        // Start client connection
-        ClientServerConnectionStarter connection = 
-                new ClientServerConnectionStarter(HOST_NAME, PORT_NUMBER);
-        connection.start();
-    }
-    
-  
-    
-   
+	public static void main (String [] args) throws Exception{
+		Client ClueLessClient=new Client();
+		ClueLessClient.run();
+	}
+	
+	public void run() throws Exception{
+		
+		Socket SOCK=new Socket ("localhost", 555);
+		PrintStream PS=new PrintStream(SOCK.getOutputStream());
+		PS.println("Hello Server from Client");
+		
+		InputStreamReader IR=new InputStreamReader(SOCK.getInputStream());
+		BufferedReader BR=new BufferedReader(IR);
+		
+		String MESSAGE=BR.readLine();
+		System.out.println(MESSAGE);
+		
+	}
+	
+	
+	
+	
+	
+	
 }
