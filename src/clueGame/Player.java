@@ -22,6 +22,9 @@ public class Player
   //BEN: Boolean added to indicate if Player object is dead from a false accusation
   private boolean isDead = false;
   
+  //BEN: Boolean variable added to indicate if a Player object was forcibly moved by another Player's guess
+  private boolean forceMove = false;
+  
   public Player() {}
   
   public Player(String name, int row, int column, Color color)
@@ -204,6 +207,17 @@ public class Player
   public void setIsDead(boolean isDead)
   {
 	  this.isDead = isDead;
+  }
+
+  //BEN: getter and setter methods for the forceMove variable
+  public boolean getForceMove()
+  {
+	  return forceMove;
+  }
+  
+  public void setForceMove(boolean forceMove)
+  {
+	  this.forceMove = forceMove;
   }
   
 }
