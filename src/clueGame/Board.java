@@ -264,6 +264,12 @@ public class Board
 	  {
 		  checkNeighbor(0,4, neighbors);
 	  }
+	  //BEN: added logic to deal with allowing a player to stay in a room if moved by another player's guess
+	  else if (currentPlayer.getForceMove())
+	  {
+		  neighbors.add(cell);
+		  currentPlayer.setForceMove(false);
+	  }
 	  return neighbors;
 	}
 
@@ -416,6 +422,8 @@ public class Board
       if (p.getName().equals(playerName))
       {
         p.setLocation(location);
+	//BEN: set flag for indicating the player was forcibly moved due to another player's guess
+        p.setForceMove(true);
         break;
       }
     }
