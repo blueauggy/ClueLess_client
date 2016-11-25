@@ -285,7 +285,8 @@ public class Board
     //Check to see if player is already on the cell
     for (Player p: players)
     {
-    	if(p.getColumn() == col && p.getRow() == row)
+    	//BEN: added third && conditional to account for dead Players, allowing alive Players to not be obstructed by the dead ones.
+    	if(p.getColumn() == col && p.getRow() == row && (p.getIsDead()==false))
     	{
     		return;
     	}
