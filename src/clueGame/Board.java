@@ -265,7 +265,7 @@ public class Board
 		  checkNeighbor(0,4, neighbors);
 	  }
 	  //BEN: added logic to deal with allowing a player to stay in a room if moved by another player's guess
-	  else if (currentPlayer.getForceMove())
+	  if (currentPlayer.getForceMove())
 	  {
 		  neighbors.add(cell);
 		  currentPlayer.setForceMove(false);
