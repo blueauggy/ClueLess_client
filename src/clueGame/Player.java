@@ -19,6 +19,9 @@ public class Player
   protected ArrayList<String> seenCards = new ArrayList<String>();
   private boolean needToFinish = false;
   
+  //BEN: Boolean added to indicate if Player object is dead from a false accusation
+  private boolean isDead = false;
+  
   public Player() {}
   
   public Player(String name, int row, int column, Color color)
@@ -120,6 +123,7 @@ public class Player
     this.needToFinish = true;
     
     board.highlightTargets(true);
+
   }
   
   public void finishTurn(BoardCell clicked)
@@ -190,4 +194,16 @@ public class Player
   {
     return this.myCards;
   }
+  
+  //BEN: Getter/Setter code to get/set  if a player is dead or not
+  public boolean getIsDead()
+  {
+	  return isDead;
+  }
+  
+  public void setIsDead(boolean isDead)
+  {
+	  this.isDead = isDead;
+  }
+  
 }
