@@ -351,6 +351,17 @@ public class Board
     }
   }
   
+  //BEN: De-highlights targets for the whole board. 
+  //This method is used following the end of a players turn who falsely accused 
+  //Without this method, the accusers potential moves remain on the board after their turn.
+  public void dehighlightTargets()
+  {
+	  for(BoardCell cell : this.targets)
+	  {
+		  cell.setHighlight(false);
+	  }
+  }
+  
   /**
    * TODO: Fix back to just this.client after testing is done
    */
@@ -457,6 +468,8 @@ public class Board
         JOptionPane.showMessageDialog(null, "Sorry, not correct!");
 	//BEN: set isDead indicator for player with incorrect accusation 
         this.client.setIsDead(true);
+	//BEN: calls this method to de-highlight the incorrect accusers possible moves before the accusation
+        dehighlightTargets();
       }
       this.client.finished();
     }
