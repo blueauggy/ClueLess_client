@@ -455,6 +455,8 @@ public class Board
       else
       {
         JOptionPane.showMessageDialog(null, "Sorry, not correct!");
+	//BEN: set isDead indicator for player with incorrect accusation 
+        this.client.setIsDead(true);
       }
       this.client.finished();
     }
@@ -474,6 +476,13 @@ public class Board
     }
     this.whoseTurn = ((this.whoseTurn + 1) % this.players.size());
     this.currentPlayer = ((Player)this.players.get(this.whoseTurn));
+    
+    //BEN: Skips dead player (incorrect accusation) 
+    if(currentPlayer.getIsDead())
+    {
+    	 this.whoseTurn = ((this.whoseTurn + 1) % this.players.size());
+    	 this.currentPlayer = ((Player)this.players.get(this.whoseTurn));
+    }
     
     this.gameControl.showTurn(this.currentPlayer.getName());
     calcTargets(this.currentPlayer.getRow(), this.currentPlayer.getColumn());
