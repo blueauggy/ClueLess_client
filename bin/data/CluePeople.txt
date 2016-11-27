@@ -1,1 +1,3 @@
 Miss Scarlet, 0, 3, red
+Colonel Mustard, 1, 4, orange
+Mr. Green, 4, 1, green

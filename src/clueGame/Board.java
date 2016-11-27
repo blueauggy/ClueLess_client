@@ -71,15 +71,11 @@ public class Board
    * Starts the game, finds your possible neighbors for moves and deals cards.
    */
   public void initialize()
-  {
+  {	  
     loadConfigFiles();
-        
     addMouseListener(this);
-    
     selectAnswer();
-    
     deal();
-    
     this.whoseTurn = (this.players.size() - 1);
   }
   

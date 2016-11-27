@@ -1,6 +1,8 @@
-import java.net.*;
-import java.io.*;
-import java.util.*;
+package clueGame;
+
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 public class A_Chat_Client implements Runnable {

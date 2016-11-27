@@ -22,17 +22,19 @@ public class ClueGame
   private DetectiveNotes notes;
   private Board board;
   private GameControlPanel gameControl;
+  private static LobbyClientGUI lobby;
   public String boardConfigFile = "CR_ClueLayout.csv";
   public String roomConfigFile = "CR_ClueLegend.txt";
   private int GUIx = 620;
   private int GUIy = 750;
   
+  /*
   public ClueGame(String boardConfig, String roomConfig)
   {
     this.boardConfigFile = boardConfig;
     this.roomConfigFile = roomConfig;
     setUp();
-  }
+  }*/
   
   public ClueGame()
   {
@@ -123,9 +125,10 @@ public class ClueGame
   
   public static void main(String[] args)
   {
-    ClueGame frame = new ClueGame();
-    frame.setVisible(true);
-    JOptionPane.showMessageDialog(frame, "You are Miss Scarlet, press Next Player to begin play", 
-      "Welcome to Clue", 1);
+	lobby = new LobbyClientGUI("localhost", 5555);
+   // ClueGame frame = new ClueGame();
+   // frame.setVisible(true);
+   // JOptionPane.showMessageDialog(frame, "You are Miss Scarlet, press Next Player to begin play", 
+   //   "Welcome to Clue", 1);
   }
 }
