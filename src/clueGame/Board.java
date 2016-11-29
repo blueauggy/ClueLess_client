@@ -340,10 +340,21 @@ public class Board
     		  //redraw square on collision
     		  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
     		  p1.redrawCollision(g, this, p2);
-    		  return;
+    		  //return;
+    	  }
+	  for (Player p3 : this.players)
+    	  {
+    		  if (( p1.getName() != p2.getName()) && (p1.getName() != p3.getName()) && (p2.getName() != p3.getName())
+    				  && (p1.getColumn() == p2.getColumn()) && ( p1.getRow() == p2.getRow())
+    			  	&& (p1.getColumn() == p3.getColumn()) && (p1.getRow() == p3.getRow()))
+    		  {
+    			  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
+    			  p1.redrawCollision(g, this, p2, p3);
+    		  }
     	  }
       }
     }
+    return;
   }
   
   /**
