@@ -27,12 +27,12 @@ public class Player
   
   public Player() {}
   
-  public Player(String name, int row, int column, Color color)
+  public Player(String name, int row, int column, String color)
   {
     this.playerName = name;
     this.row = row;
     this.column = column;
-    this.color = color;
+    this.color = new Color(Integer.parseInt(color));
   }
   
   public void updateAttributes(String line)
@@ -65,7 +65,6 @@ public class Player
   public void addCard(Card card)
   {
     this.myCards.add(card);
-    
     this.seenCards.add(card.getCardName());
   }
   
@@ -120,46 +119,12 @@ public class Player
     g.setColor(Color.black);
     g.drawString(p2.getName(), x + 2, y + (BoardCell.PIECE_SIZE-2));
   }
-	
-   public void redrawCollision(Graphics2D g, Board board, Player p2, Player p3)
-   {
-    int size = BoardCell.PIECE_SIZE;
-    int x = this.column * size;
-    int y = this.row * size;
-   
-    //P1
-    g.setColor(this.color);
-    g.fillOval(x, y + (BoardCell.PIECE_SIZE/4), size/3, size/3);
-    g.setColor(Color.black);
-    g.drawOval(x, y + (BoardCell.PIECE_SIZE/4), size/3, size/3);
-    g.setColor(Color.black);
-    g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
-    
-    //P2
-    g.setColor(p2.getColor());
-    g.fillOval(x+(BoardCell.PIECE_SIZE/2)+17, y+ (BoardCell.PIECE_SIZE/4), size/3, size/3);
-    g.setColor(Color.black);
-    g.drawOval(x +(BoardCell.PIECE_SIZE/2)+17, y + (BoardCell.PIECE_SIZE/4), size/3, size/3);
-    g.setColor(Color.black);
-    g.drawString(p2.getName(), x + 2, y + (BoardCell.PIECE_SIZE-2));
-    
-    //P3
-    g.setColor(p3.getColor());
-    g.fillOval(x+(BoardCell.PIECE_SIZE/3), y+ (BoardCell.PIECE_SIZE/4), size/3, size/3);
-    g.setColor(Color.black);
-    g.drawOval(x + (BoardCell.PIECE_SIZE/3), y + (BoardCell.PIECE_SIZE/4), size/3, size/3);
-    g.setColor(Color.black);
-    g.drawString(p3.getName(), x + 2, y + (BoardCell.PIECE_SIZE-25));
-    
-  }
   
-  
-  
-  public void makeMove(Board board)
+  public void makeMove(Board board, Boolean highlight)
   {
     this.needToFinish = true;
     
-    board.highlightTargets(true);
+    board.highlightTargets(highlight);
 
   }
   

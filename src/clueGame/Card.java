@@ -44,4 +44,16 @@ public class Card
   {
     return this.cardName;
   }
+  
+  public static CardType stringCardType(String s)
+  {
+	  if (s.equals("ROOM"))
+		  return CardType.ROOM;
+	  else if (s.equals("WEAPON"))
+		  return CardType.WEAPON;
+	  else if (s.equals("PERSON"))
+		  return CardType.PERSON;
+	  else
+		  return null;
+  }
 }

@@ -35,19 +35,18 @@ public class Board
   private BoardCell[][] board = new BoardCell[50][50];
   private Map<Character, String> legend = new HashMap<Character, String>();
   private Set<BoardCell> targets = null;
-  private ArrayList<String> peopleNames;
+  private ArrayList<String> peopleNames = new ArrayList<String>();
   private ArrayList<String> weaponNames;
   private ArrayList<String> roomNames;
   private ArrayList<Player> players = new ArrayList<Player>();
   private Player client;
   private ArrayList<Card> cards = new ArrayList<Card>();
-  private GameControlPanel gameControl;
+  GameControlPanel gameControl;
   private Player currentPlayer;
   private int whoseTurn;
   private static Board theInstance = new Board();
   
-  //TODO: Remove final answer
-  private Guess finalAnswer;
+  //private Guess finalAnswer;
   
  /**
   * 
@@ -74,8 +73,8 @@ public class Board
   {	  
     loadConfigFiles();
     addMouseListener(this);
-    selectAnswer();
-    deal();
+    //selectAnswer();
+    //deal();
     this.whoseTurn = (this.players.size() - 1);
   }
   
@@ -90,7 +89,7 @@ public class Board
       
       loadBoardConfig();
       
-      loadPeopleConfig();
+      //loadPeopleConfig();
       loadWeaponConfig();
     }
     catch (Exception e)
@@ -137,48 +136,13 @@ public class Board
     this.numRows = rowCount;
     boardConfig.close();
   }
-  
-  /**
-   * Error checking with people list. Loads people config.
-   * This section needs an overhaul when we move to multiperson mode.
-   */
-  public void loadPeopleConfig() throws FileNotFoundException
+
+  public void addPeoplesNames(String name)
   {
-	//TODO: Remove this once server handles cards.
-    this.peopleNames = new ArrayList<String>();
-    InputStream is = getClass().getResourceAsStream("/data/CluePeople.txt");
-    Scanner peopleConfig = new Scanner(is);
-    while (peopleConfig.hasNextLine())
-    {
-      String line = peopleConfig.nextLine();
-      Player player;
-      if (this.players.size() == 0)
-      {
-        this.client = new Player();
-        player = this.client;
-      }
-      else
-      {
-        player = new Player();
-      }
-      player.updateAttributes(line);
-      
-      this.cards.add(new Card(player.getName(), Card.CardType.PERSON));
-      this.peopleNames.add(player.getName());
-      
-      this.players.add(player);
-    }
-    this.whoseTurn = this.players.size();
-    peopleConfig.close();
-    
-    
-    
+	this.peopleNames.add(name);  
   }
   
-  /**
-   * 
-   * 
-   */
+
   public void loadRoomConfig() throws FileNotFoundException
   {
     InputStream is = getClass().getResourceAsStream("/data/" + this.roomConfigFile);
@@ -215,7 +179,6 @@ public class Board
   /**
    * Basic error checking on weapon config; loads weapons. 
    * @throws FileNotFoundException
-   * TODO: Remove once server has this
    */
   public void loadWeaponConfig()
     throws FileNotFoundException
@@ -243,7 +206,7 @@ public class Board
       checkNeighbor(row + 1, col, neighbors);
       checkNeighbor(row, col - 1, neighbors);
       checkNeighbor(row, col + 1, neighbors);
-      System.out.println(cell.getInitial());
+      //System.out.println(cell.getInitial());
 	  if(cell.getInitial() == 'K')
 	  {
 		  checkNeighbor(0,0, neighbors);
@@ -275,7 +238,6 @@ public class Board
     if ((row < 0) || (col < 0) || (row >= this.numRows) || (col >= this.numColumns)) {
       return;
     }
-    System.out.println("Checking "+row+","+col);
     BoardCell cell = this.board[row][col];
     
     //Check to see if player is already on the cell
@@ -293,6 +255,7 @@ public class Board
     }
     else  //Walkway or Room
     {
+    	System.out.println("Adding cell for targets "+cell.getRow()+";"+cell.getCol());
     	neighbors.add(cell);
     }
   }
@@ -336,21 +299,10 @@ public class Board
     		  //redraw square on collision
     		  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
     		  p1.redrawCollision(g, this, p2);
-    		  //return;
-    	  }
-	  for (Player p3 : this.players)
-    	  {
-    		  if (( p1.getName() != p2.getName()) && (p1.getName() != p3.getName()) && (p2.getName() != p3.getName())
-    				  && (p1.getColumn() == p2.getColumn()) && ( p1.getRow() == p2.getRow())
-    			  	&& (p1.getColumn() == p3.getColumn()) && (p1.getRow() == p3.getRow()))
-    		  {
-    			  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
-    			  p1.redrawCollision(g, this, p2, p3);
-    		  }
+    		  return;
     	  }
       }
     }
-    return;
   }
   
   /**
@@ -484,32 +436,72 @@ public class Board
   }
   
   /**
+   * TODO: Make this look better
    * Next player button push triggers this action which cycles to next player.
    */
   public void nextPlayer()
   {
-    if (this.client.mustFinish())
+	//BEN: Skips dead player (incorrect accusation) 
+    if(this.gameControl.displayTurn().equals("") || currentPlayer.getIsDead())
     {
-      JOptionPane.showMessageDialog(null, "You need to finish your turn");
-      
-      return;
+    	iterateTurn(false);
     }
-    this.whoseTurn = ((this.whoseTurn + 1) % this.players.size());
-    this.currentPlayer = ((Player)this.players.get(this.whoseTurn));
-    
-    //BEN: Skips dead player (incorrect accusation) 
-    if(currentPlayer.getIsDead())
+    else if (this.client.mustFinish())
     {
-    	 this.whoseTurn = ((this.whoseTurn + 1) % this.players.size());
-    	 this.currentPlayer = ((Player)this.players.get(this.whoseTurn));
+    	JOptionPane.showMessageDialog(null, "You need to finish your turn"); 
+    	return;
     }
-    
-    this.gameControl.showTurn(this.currentPlayer.getName());
-    calcTargets(this.currentPlayer.getRow(), this.currentPlayer.getColumn());
-    
-    this.currentPlayer.makeMove(this);
-    
-    repaint();
+    else if(!this.client.equals(this.currentPlayer))// && !this.gameControl.displayTurn().equals(""))
+    {
+    	JOptionPane.showMessageDialog(null, "It is not your turn. Wait for oponents to finish their turns.");
+    	System.out.println("CurrPlayer: " + this.currentPlayer.getName());
+    	System.out.println("Client: "+this.client.getName());
+        return;
+    }
+    else
+    {
+    	iterateTurn(false);
+    }
+  }
+  
+  /**
+   */
+  public void iterateTurn(Boolean skip)
+  {
+	  this.whoseTurn = ((this.whoseTurn + 1) % this.players.size());
+	  this.currentPlayer = ((Player)this.players.get(this.whoseTurn));
+	  
+	  if(!skip)
+	  {
+		  this.gameControl.showTurn(this.currentPlayer.getName());
+		  calcTargets(this.currentPlayer.getRow(), this.currentPlayer.getColumn());
+		  System.out.println(this.whoseTurn);
+		  System.out.println(this.currentPlayer.getName());
+		  if (this.client.equals(this.currentPlayer))
+		  {
+			  System.out.println("Your move");
+			  this.currentPlayer.makeMove(this, true);
+			  repaint();
+		  }
+		  else
+		  {
+			  System.out.println("Not your move");
+			  this.currentPlayer.makeMove(this, false);
+			  repaint();
+		  }
+		  //skips initial next player to start game from sending to server.
+		  if(this.whoseTurn>0)
+		  {
+			  System.out.println("Sending turn "+this.whoseTurn+" to server");
+			  System.out.println("Send next turn to server");
+			  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateTurn());
+			  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateCurPlayer());
+			  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardState());
+			  //System.out.println(Board.getInstance().sendBoardState());
+		  }
+		  
+		  repaint();
+	  }
   }
   
   /**
@@ -540,7 +532,7 @@ public class Board
       Player player = (Player)this.players.get(whichPlayer);
       if (player != accusingPlayer)
       {
-    	  System.out.println(player.getName());
+    	  //System.out.println(player.getName());
     	  //TODO: This information should be coming from the server when a player asks for cards back.
     	  Card tmp = new Card("Wrench", Card.CardType.WEAPON);
     	  this.gameControl.setGuessResult(tmp.getCardName());
@@ -563,36 +555,6 @@ public class Board
 	System.out.println("Player guessed ["+guess.person+"] in the ["+guess.room+"] with the ["+guess.weapon+"]");
     return null;
   }
-  
-/**
- * Choosing the final solution.  
- * TODO: This will be done by the server but we will hardcode something in here for now.
- */
-  public void selectAnswer()
-  {
-	//Final answer is held by the server; Made up one for now
-    this.finalAnswer = new Guess();
-    this.finalAnswer.person = "Miss Scarlet";
-    this.finalAnswer.weapon = "Wrench";
-    this.finalAnswer.room = "Library";
-  }
-  
-  /**
-   * Deal initial cards.
-   */
-  public void deal()
-  {
-	//Cards are sent from server; picked 3 randoms
-	  
-    Card first = new Card("Wrench", Card.CardType.WEAPON);
-    Card second = new Card("Ballroom", Card.CardType.ROOM);
-    Card third = new Card("Revolver", Card.CardType.WEAPON);
-    
-    client.addCard(first);
-    client.addCard(second);
-    client.addCard(third);
-  }
-  
   
   /**
    * Returns string for name of room from input initial.  Defined by data/CR_ClueLegend.
@@ -625,7 +587,6 @@ public class Board
   
   /**
    * Returns list of the people names
-   * TODO: Remove when server is up
    */
   public ArrayList<String> getPeopleNames()
   {
@@ -640,12 +601,38 @@ public class Board
     return this.client.getMyCards();
   }
   
+  public void addCardtoClient(Card card)
+  {
+	 this.client.addCard(card);
+	 return;
+  }
+  
+  public String sendBoardState()
+  {
+	  String output="BoardState:";
+	  for (Player p : this.players)
+	  {
+		  output = output + p.getName()+","+p.getRow()+","+p.getColumn()+";";
+	  }
+	  return output.substring(0, output.length()-1);
+  }
+  
+  public String sendBoardStateTurn()
+  {
+	  return "BoardState Turn:"+this.whoseTurn;
+  }
+  
+  public String sendBoardStateCurPlayer()
+  {
+	  return "BoardState CP:"+this.currentPlayer.getName();
+  }
+  
   /**
    * Return gameControl handle
    */
   public void setGameControl(GameControlPanel gameControl)
   {
-    this.gameControl = gameControl;
+	  this.gameControl = gameControl;
   }
   
   /**
@@ -653,12 +640,38 @@ public class Board
    */
   public Set<BoardCell> getTargets()
   {
-    return this.targets;
+	  return this.targets;
+  }
+  
+  public void setClient(Player client)
+  {
+	  this.client = client;	  
+  }
+  
+  public Player getClient()
+  {
+	  return this.client;
+  }
+  
+  public void setWhoseTurn(int turn)
+  {
+	  this.whoseTurn = turn;
+  }
+  
+  public Integer getWhoseTurn()
+  {
+	  return this.whoseTurn;
   }
   
   public Player getCurrentPlayer()
   {
-    return this.currentPlayer;
+	  return this.currentPlayer;
   }
+  
+  public void setCurrentPlayer(Player p)
+  {
+	  this.currentPlayer = p;
+  }
+  
 
 }

@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class LobbyClientGUI {
 
-	private static A_Chat_Client ChatClient;
+	public static A_Chat_Client ChatClient;
 	public static String UserName;
 	
 	private static JFrame MainWindow=new JFrame();
@@ -52,8 +52,6 @@ public class LobbyClientGUI {
 	
 	public static void Connect(){
 		try{
-			//final int PORT=5555;
-			//final String HOST="localhost";
 			ServerSock=new Socket (HOST,PORT);
 			System.out.println("You connected to: " + HOST);
 		
@@ -81,6 +79,7 @@ public class LobbyClientGUI {
 		B_DISCONNECT.setEnabled(false);
 		B_JOIN.setEnabled(true);
 		B_LAUNCH.setEnabled(false);
+		TF_Message.setEnabled(false);
 	}
 	
 	public static void BuildMainWindow(){
@@ -123,7 +122,8 @@ public class LobbyClientGUI {
 		if(!TF_UserNameBox.getText().equals("")){
 			UserName=TF_UserNameBox.getText().trim();
 			L_LoggedInAsBox.setText(UserName);
-			//New code that adds request to server to add user to current users under Lobby class
+			//TODO: New code that adds request to server to add user to current users under Lobby class
+			//ChatClient.STATUS_SEND("AddUser:"+UserName);
 			//Lobby.CurrentUsers.add(UserName);
 			MainWindow.setTitle(UserName + "'s Lobby Box");
 			LogInWindow.setVisible(false);
@@ -131,6 +131,7 @@ public class LobbyClientGUI {
 			B_DISCONNECT.setEnabled(true);
 			B_JOIN.setEnabled(false);
 			B_LAUNCH.setEnabled(true);
+			TF_Message.setEnabled(true);
 			Connect();
 		} else {
 			JOptionPane.showMessageDialog(null, "Please enter a name.");
@@ -190,6 +191,7 @@ public class LobbyClientGUI {
 	
 	public static void ACTION_B_LAUNCH(){
 		//TODO:Send message to server to start
+		ChatClient.STATUS_SEND("GAME START");
 		return;			
 	}
 

@@ -22,29 +22,20 @@ public class ClueGame
   private DetectiveNotes notes;
   private Board board;
   private GameControlPanel gameControl;
-  private static LobbyClientGUI lobby;
+ // private static LobbyClientGUI lobby;
   public String boardConfigFile = "CR_ClueLayout.csv";
   public String roomConfigFile = "CR_ClueLegend.txt";
   private int GUIx = 620;
   private int GUIy = 750;
   
-  /*
-  public ClueGame(String boardConfig, String roomConfig)
+  public ClueGame(String client)
   {
-    this.boardConfigFile = boardConfig;
-    this.roomConfigFile = roomConfig;
-    setUp();
-  }*/
-  
-  public ClueGame()
-  {
-    setUp();
+    setUp(client);
   }
   
-  public void setUp()
+  public void setUp(String client)
   {
-    setTitle("Clue Game");
-    
+    setTitle("Clue Game - "+client);
     this.board = Board.getInstance();
     this.board.setConfigFiles(this.boardConfigFile, this.roomConfigFile);
     try
@@ -56,6 +47,14 @@ public class ClueGame
       System.out.println("error!");
     }
     setupGUI();
+  }
+  
+  public static void setUpClueGame(String client)
+  {
+	  ClueGame frame = new ClueGame(client);
+	  frame.setVisible(true);
+	  //TODO: Uncomment this for production
+	  //JOptionPane.showMessageDialog(frame, "You are "+client, "Welcome to Clue", 1);
   }
   
   /**
@@ -125,7 +124,7 @@ public class ClueGame
   
   public static void main(String[] args)
   {
-	lobby = new LobbyClientGUI("localhost", 5555);
+	new LobbyClientGUI("localhost", 5555);
    // ClueGame frame = new ClueGame();
    // frame.setVisible(true);
    // JOptionPane.showMessageDialog(frame, "You are Miss Scarlet, press Next Player to begin play", 

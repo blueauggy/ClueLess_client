@@ -49,9 +49,7 @@ public class GameControlPanel
   }
   
   public void nextPlayer()
-  {
-	//send end game turn to server
-	System.out.println("Send next turn to server");
+  {	
     this.theGuess.setText("");
     this.guessResult.setText("");
     
@@ -61,6 +59,11 @@ public class GameControlPanel
   public void showTurn(String playerName)
   {
     this.turnDisplay.setText(playerName);
+  }
+  
+  public String displayTurn()
+  {
+    return this.turnDisplay.getText();
   }
   
   public void setGuess(String guess)
@@ -80,6 +83,7 @@ public class GameControlPanel
     panel.add(createGuessResult());
     add(panel);
   }
+  
   
   private JPanel createGuessStatus()
   {
@@ -128,10 +132,10 @@ public class GameControlPanel
   {
     JPanel panel = new JPanel();
     JLabel label = new JLabel("Whose turn?");
-    panel.add(label);
+    
     this.turnDisplay = new JTextField(15);
     this.turnDisplay.setEditable(false);
-    
+    panel.add(label);
     panel.add(this.turnDisplay);
     return panel;
   }
