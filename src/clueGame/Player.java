@@ -89,7 +89,15 @@ public class Player
     g.drawOval(x + (BoardCell.PIECE_SIZE/4), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
     
     //BEN: Added these lines to display the player name under the icon
-    g.setColor(Color.black);
+    
+    int x_grid = x+2;
+    int y_grid = y+ (BoardCell.PIECE_SIZE-13);
+    g.setColor(Color.BLACK);
+    g.drawString(this.getName(), x_grid+1, y_grid+1);
+    g.drawString(this.getName(), x_grid+1, y_grid-1);
+    g.drawString(this.getName(), x_grid-1, y_grid+1);
+    g.drawString(this.getName(), x_grid-1, y_grid-1);
+    g.setColor(Color.ORANGE);
     g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
 
   }
@@ -106,17 +114,17 @@ public class Player
     //P1
     g.setColor(this.color);
     g.fillOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
-    g.setColor(Color.black);
+    g.setColor(Color.BLACK);
     g.drawOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
-    g.setColor(Color.black);
+    g.setColor(Color.ORANGE);
     g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
     
     //P2
     g.setColor(p2.getColor());
     g.fillOval(x+(BoardCell.PIECE_SIZE/2), y+ (BoardCell.PIECE_SIZE/4), size/2, size/2);
-    g.setColor(Color.black);
+    g.setColor(Color.BLACK);
     g.drawOval(x + (BoardCell.PIECE_SIZE/2), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
-    g.setColor(Color.black);
+    g.setColor(Color.ORANGE);
     g.drawString(p2.getName(), x + 2, y + (BoardCell.PIECE_SIZE-2));
   }
   

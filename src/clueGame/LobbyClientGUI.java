@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-
+@SuppressWarnings("rawtypes")
 public class LobbyClientGUI {
 
 	public static A_Chat_Client ChatClient;
@@ -122,9 +122,6 @@ public class LobbyClientGUI {
 		if(!TF_UserNameBox.getText().equals("")){
 			UserName=TF_UserNameBox.getText().trim();
 			L_LoggedInAsBox.setText(UserName);
-			//TODO: New code that adds request to server to add user to current users under Lobby class
-			//ChatClient.STATUS_SEND("AddUser:"+UserName);
-			//Lobby.CurrentUsers.add(UserName);
 			MainWindow.setTitle(UserName + "'s Lobby Box");
 			LogInWindow.setVisible(false);
 			B_SEND.setEnabled(true);
@@ -190,7 +187,6 @@ public class LobbyClientGUI {
 	}
 	
 	public static void ACTION_B_LAUNCH(){
-		//TODO:Send message to server to start
 		ChatClient.STATUS_SEND("GAME START");
 		return;			
 	}
@@ -288,10 +284,7 @@ public class LobbyClientGUI {
 		L_ONLINE.setToolTipText("");
 		MainWindow.getContentPane().add(L_ONLINE);
 		L_ONLINE.setBounds(450,70,130,16);
-		
-		//String [] TestNames={"Ben", "Chris", "Paul", "Van"};
 		JL_ONLINE.setForeground(new java.awt.Color(0,0,255));
-		//JL_ONLINE.setListData(TestNames);
 		
 		SP_ONLINE.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		SP_ONLINE.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);		

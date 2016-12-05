@@ -52,6 +52,7 @@ public class A_Chat_Client implements Runnable {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void RECEIVE(){
 		if(INPUT.hasNext()){
 			String message =INPUT.nextLine();
@@ -59,8 +60,6 @@ public class A_Chat_Client implements Runnable {
 			if(message.startsWith("----"))
 			{
 				String status = message.substring(4);
-				//System.out.println("System Message Recieved:");
-				//System.out.println(status);
 				Board gameInst = Board.getInstance();
 				if(status.startsWith("CurrentUsers:"))
 				{

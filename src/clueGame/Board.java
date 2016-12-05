@@ -84,10 +84,7 @@ public class Board
     try
     {
       loadRoomConfig();
-      
       loadBoardConfig();
-      
-      //loadPeopleConfig();
       loadWeaponConfig();
     }
     catch (Exception e)
@@ -178,8 +175,7 @@ public class Board
    * Basic error checking on weapon config; loads weapons. 
    * @throws FileNotFoundException
    */
-  public void loadWeaponConfig()
-    throws FileNotFoundException
+  public void loadWeaponConfig() throws FileNotFoundException
   {
     this.weaponNames = new ArrayList<String>();
     
@@ -204,7 +200,6 @@ public class Board
       checkNeighbor(row + 1, col, neighbors);
       checkNeighbor(row, col - 1, neighbors);
       checkNeighbor(row, col + 1, neighbors);
-      //System.out.println(cell.getInitial());
 	  if(cell.getInitial() == 'K')
 	  {
 		  checkNeighbor(0,0, neighbors);
@@ -296,7 +291,6 @@ public class Board
     		  //redraw square on collision
     		  this.board[(int)p1.getRow()][(int)p1.getColumn()].draw(g);
     		  p1.redrawCollision(g, this, p2);
-    		  //return;
     	  }
       }
     }
@@ -315,17 +309,9 @@ public class Board
     }
   }
   
-
-  
-  /**
-   * TODO: Fix back to just this.client after testing is done
-   * NEEDS A  LOT OF FIXING
-   */
   public void mouseClicked(MouseEvent e)
   {
-    //if (!this.client.mustFinish()) {
-  //    return;
-   // }
+
 	if (!this.currentPlayer.mustFinish()){
 	  return;
 	}
@@ -336,7 +322,6 @@ public class Board
     }
     else
     {
-      //this.client.finishTurn(clicked);
       this.currentPlayer.finishTurn(clicked);
       System.out.println("Highlighting from mouseclicked");
       highlightTargets(false);
@@ -347,7 +332,6 @@ public class Board
         GuessDialog dialog = new GuessDialog(roomName);
         dialog.setVisible(true);
         if (dialog.isSubmitted()) {
-          //handleGuess(dialog.getGuess(), this.client, clicked);
         	handleGuess(dialog.getGuess(), this.currentPlayer, clicked);
         }
       }
@@ -416,31 +400,11 @@ public class Board
     {
     	Guess guess = dialog.getGuess();
     	LobbyClientGUI.ChatClient.STATUS_SEND(this.sendAccusation(guess));
-    	/*
-      Guess guess = dialog.getGuess();
-      result = checkAccusation(guess);
-      if (result)
-      {
-        JOptionPane.showMessageDialog(null, "You win!");
-        
-        System.exit(0);
-      }
-      else
-      {
-        JOptionPane.showMessageDialog(null, "Sorry, not correct!");
-	//BEN: set isDead indicator for player with incorrect accusation 
-        this.client.setIsDead(true);
-	//BEN: calls this method to de-highlight the incorrect accusers possible moves before the accusation
-        highlightTargets(false);
-      }
-      this.client.finished();
-      */
     }
     return result;
   }
   
   /**
-   * TODO: Make this look better
    * Next player button push triggers this action which cycles to next player.
    */
   public void nextPlayer()
@@ -475,15 +439,11 @@ public class Board
 	  System.out.println("Starting iterateTurn: whoseTurn before is: "+this.whoseTurn);
 	  System.out.println("Skip: "+skip);
 	  System.out.println("Updating whoseTurn: "+this.whoseTurn);
-	  //this.whoseTurn = (this.whoseTurn+1 % this.players.size());
-	  //System.out.println("Updating whoseTurn: "+this.whoseTurn);
-	  //this.currentPlayer = ((Player)this.players.get(this.whoseTurn));
 	  
 	  if(skip)
 	  {
 		  this.gameControl.showTurn(this.currentPlayer.getName());
 		  calcTargets(this.currentPlayer.getRow(), this.currentPlayer.getColumn());
-		  //this.whoseTurn = this.whoseTurn;
 		  if (this.client.equals(this.currentPlayer))
 		  {
 			  System.out.println("Your move: "+this.currentPlayer.getName());
@@ -493,7 +453,6 @@ public class Board
 		  else
 		  {
 			  System.out.println("Not your move: "+this.currentPlayer.getName());
-			  //this.currentPlayer.makeMove(this, false);
 			  repaint();
 		  }
 	  }
@@ -505,7 +464,6 @@ public class Board
 		  System.out.println("Cur Player: "+this.currentPlayer.getName());
 		  if (this.client.equals(this.currentPlayer))
 		  {
-			  //System.out.println("Your move");
 			  System.out.println("Hightlighting from iterateTurn");
 			  this.currentPlayer.makeMove(this, true);
 			  repaint();
@@ -513,44 +471,23 @@ public class Board
 		  else
 		  {
 			  System.out.println("Hightlighting from iterateTurn2");
-			 // System.out.println("Not your move");
-			  //this.currentPlayer.makeMove(this, false);
+
 			  repaint();
 		  }
-		  //skips initial next player to start game from sending to server.
-		  //if(this.whoseTurn>0)
-		 // {
+
 		  this.whoseTurn = this.whoseTurn+1;
 		  this.currentPlayer.finished();
-		  //this.currentPlayer = ((Player)this.players.get(this.whoseTurn % this.players.size()));
 		  System.out.println("Sending turn "+this.whoseTurn+" to server");
 		  System.out.println("Send next turn to server");
 		  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateTurn());
 		  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateCurPlayer());
 		  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardState());
-			  //System.out.println(Board.getInstance().sendBoardState());
 		  
 		  repaint();
 	  }
   }
   
-  /**
-   * 
-   */
-  public boolean checkAccusation(Guess guess)
-  {
-	//TODO: Add server code
-	//Send to server to check if guess is the correct answer; Set to false for now;
-	  return false;
 
-  }
-  /**
-   * TODO SEND INFO to Server and wait for response
-   * @param guess
-   * @param accusingPlayer
-   * @param clicked
-   * @return
-   */
   public void handleGuess(Guess guess, Player accusingPlayer, BoardCell clicked)
   {
 	  
@@ -561,57 +498,6 @@ public class Board
     LobbyClientGUI.ChatClient.STATUS_SEND(this.sendGuess(accusingPlayer, guess));
     
 	System.out.println("Player guessed ["+guess.person+"] in the ["+guess.room+"] with the ["+guess.weapon+"]");
-    //return null;
-  }
-  
-  /**
-   * Returns string for name of room from input initial.  Defined by data/CR_ClueLegend.
-   */
-  public String getRoomName(char initial)
-  {
-    return (String)this.legend.get(Character.valueOf(initial));
-  }
-  
-  /**
-   * Returns list of the rooms names
-   */
-  public ArrayList<String> getRoomNames()
-  {
-    return this.roomNames;
-  }
-  
-  public ArrayList<Player> getPlayers()
-  {
-	  return this.players;
-  }
-  
-  /**
-   * Returns list of the weapons names
-   */
-  public ArrayList<String> getWeaponNames()
-  {
-    return this.weaponNames;
-  }
-  
-  /**
-   * Returns list of the people names
-   */
-  public ArrayList<String> getPeopleNames()
-  {
-    return this.peopleNames;
-  }
-  
-  /**
-   * Returns cards currently given to the client
-   */
-  public ArrayList<Card> getClientCards()
-  {
-    return this.client.getMyCards();
-  }
-  
-  public void addCardtoClient(Card card)
-  {
-	 this.client.addCard(card);
   }
   
   public Boolean onePlayerleft()
@@ -702,6 +588,41 @@ public class Board
   public void setCurrentPlayer(Player p)
   {
 	  this.currentPlayer = p;
+  }
+  
+  public String getRoomName(char initial)
+  {
+    return (String)this.legend.get(Character.valueOf(initial));
+  }
+  
+  public ArrayList<String> getRoomNames()
+  {
+    return this.roomNames;
+  }
+  
+  public ArrayList<Player> getPlayers()
+  {
+	  return this.players;
+  }
+  
+  public ArrayList<String> getWeaponNames()
+  {
+    return this.weaponNames;
+  }
+  
+  public ArrayList<String> getPeopleNames()
+  {
+    return this.peopleNames;
+  }
+  
+  public ArrayList<Card> getClientCards()
+  {
+    return this.client.getMyCards();
+  }
+  
+  public void addCardtoClient(Card card)
+  {
+	 this.client.addCard(card);
   }
   
 
