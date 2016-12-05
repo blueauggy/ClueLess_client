@@ -180,6 +180,55 @@ public class A_Chat_Client implements Runnable {
 						
 					}
 				}
+				else if(status.startsWith("Accusation Result:"))
+				{
+					String player = status.split(":")[1];
+					String result = status.split(":")[2];
+					System.out.println("Recieved Accusation Result: "+status);
+					for (Player p : gameInst.getPlayers())
+					{
+						System.out.println("Client "+gameInst.getClient().getName());
+						System.out.println("Acc Player "+player);
+						System.out.println("Inc Player "+p.getName());
+						if(gameInst.getClient().equals(p) && player.equals(p.getName()))
+						{
+							if (result.equals("WIN"))
+							{
+								JOptionPane.showMessageDialog(null, player+" wins!", "YOU WIN!", 1);
+								System.exit(0);
+							}
+							else
+							{
+								JOptionPane.showMessageDialog(null, "Sorry, not correct. You have lost!", "GAME OVER!", 1);
+								System.exit(0);
+								p.setIsDead(true);
+							}
+						}
+						else if (gameInst.getClient().equals(p) && !player.equals(p.getName()))
+						{
+							if (result.equals("WIN"))
+							{
+								JOptionPane.showMessageDialog(null, player+" wins!", "GAME OVER!", 1);
+								System.exit(0);
+							}
+							else
+							{
+								JOptionPane.showMessageDialog(null, player+" has accused incorrectly and has lost!");
+								//Check if you are last player alive
+								for (Player p2: gameInst.getPlayers())
+								{
+									if (p2.getName().equals(player))
+										p2.setIsDead(true);
+								}
+								if (gameInst.onePlayerleft())
+								{
+									JOptionPane.showMessageDialog(null, p.getName()+" is the only remaining player.  You win!", "YOU WIN!", 1);
+									System.exit(0);
+								}
+							}
+						}
+					}
+				}
 
 			} 
 			else 

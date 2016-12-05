@@ -414,6 +414,9 @@ public class Board
     dialog.setVisible(true);
     if (dialog.isSubmitted())
     {
+    	Guess guess = dialog.getGuess();
+    	LobbyClientGUI.ChatClient.STATUS_SEND(this.sendAccusation(guess));
+    	/*
       Guess guess = dialog.getGuess();
       result = checkAccusation(guess);
       if (result)
@@ -428,9 +431,10 @@ public class Board
 	//BEN: set isDead indicator for player with incorrect accusation 
         this.client.setIsDead(true);
 	//BEN: calls this method to de-highlight the incorrect accusers possible moves before the accusation
-        //highlightTargets(false);
+        highlightTargets(false);
       }
       this.client.finished();
+      */
     }
     return result;
   }
@@ -608,7 +612,26 @@ public class Board
   public void addCardtoClient(Card card)
   {
 	 this.client.addCard(card);
-	 return;
+  }
+  
+  public Boolean onePlayerleft()
+  {
+	  int playersAlive=0;
+	  for (Player p : this.players)
+	  {
+		  if (!p.getIsDead())
+		  {
+			  playersAlive = playersAlive+1;
+		  }
+	  }
+	  if (playersAlive>1)
+	  {
+		  return false;
+	  }
+	  else
+	  {
+		  return true;
+	  }
   }
   
   public String sendBoardState()
@@ -636,17 +659,16 @@ public class Board
 	  return "PlayerGuess:"+accusingPlayer.getName()+":"+guess.person+","+guess.weapon+","+guess.room;
   }
   
-  /**
-   * Return gameControl handle
-   */
+  public String sendAccusation(Guess guess)
+  {
+	  return "PlayerAccusation:"+this.client.getName()+":"+guess.person+","+guess.weapon+","+guess.room;
+  }
+  
   public void setGameControl(GameControlPanel gameControl)
   {
 	  this.gameControl = gameControl;
   }
   
-  /**
-   * Returns list of possible targets to move to
-   */
   public Set<BoardCell> getTargets()
   {
 	  return this.targets;
