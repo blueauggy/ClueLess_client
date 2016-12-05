@@ -123,7 +123,7 @@ public class Player
   public void makeMove(Board board, Boolean highlight)
   {
     this.needToFinish = true;
-    
+    System.out.println("Highlighted from Player.makemove");
     board.highlightTargets(highlight);
 
   }

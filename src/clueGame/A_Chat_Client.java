@@ -60,7 +60,7 @@ public class A_Chat_Client implements Runnable {
 			{
 				String status = message.substring(4);
 				//System.out.println("System Message Recieved:");
-				System.out.println(status);
+				//System.out.println(status);
 				Board gameInst = Board.getInstance();
 				if(status.startsWith("CurrentUsers:"))
 				{
@@ -84,6 +84,8 @@ public class A_Chat_Client implements Runnable {
 						Player p = new Player(name, row, col, color);
 						gameInst.getPlayers().add(p);
 						gameInst.addPeoplesNames(p.getName());
+						gameInst.setWhoseTurn(0);
+						gameInst.setCurrentPlayer(gameInst.getPlayers().get(0));
 						
 					}
 				}
@@ -94,7 +96,7 @@ public class A_Chat_Client implements Runnable {
 					{
 						if (p.getName().equals(name))
 						{
-							System.out.println("The client is "+name);
+							System.out.println("The client is [[["+name+"]]]");
 							gameInst.setClient(p);
 						}
 					}
@@ -117,42 +119,65 @@ public class A_Chat_Client implements Runnable {
 				}
 				else if(status.startsWith("BoardState Turn:"))
 				{
-					System.out.println("Recieved Turn");
+					System.out.println("'''"+status+"'''");
 					int value = Integer.parseInt(status.split(":")[1]);
 					gameInst.setWhoseTurn(value);
+					System.out.println("Recieved Turn: "+value);
 				}
 				else if(status.startsWith("BoardState CP:"))
 				{
 					//TODO: Redo highlight cells; mark 1st players turn as done; cannot move to shared cell;
-					System.out.println("Recieved Cur Player");
 					String value = status.split(":")[1];
+					System.out.println("Recieved Cur Player: "+value);
+					
 					for (Player p : gameInst.getPlayers())
 					{
 						if (p.getName().equals(value))
 						{
 							gameInst.setCurrentPlayer(p);
 							gameInst.gameControl.showTurn(gameInst.getCurrentPlayer().getName());
-							if (gameInst.getClient().equals(p))
-							{
-								System.out.println("Cur Player "+value+" is the client");
-								System.out.println("Highlighting targets for client "+p.getName());
-								gameInst.calcTargets(p.getRow(), p.getColumn());
-								gameInst.highlightTargets(true);
-							}
 						}
 					}
 					
 				}
 				else if(status.startsWith("BoardState:"))
 				{
-					//Parse input
 					recieveBoardState(status);
-					
-					//Update Board
+					gameInst.repaint();
 					for (Player p : gameInst.getPlayers())
 					{
-						p.makeMove(gameInst, false);
-						gameInst.repaint();
+						if(gameInst.getClient().equals(p) && gameInst.getCurrentPlayer().equals(p))
+						{
+							System.out.println("Cur Player "+p.getName()+" is the client");
+							System.out.println("Highlighting targets for client "+p.getName());
+							gameInst.calcTargets(p.getRow(), p.getColumn());
+							System.out.println("Highlighting from BoardState");
+							p.makeMove(gameInst, true);
+							gameInst.repaint();
+						}
+						else if (gameInst.getClient().equals(p) && !gameInst.getCurrentPlayer().equals(p))
+						{
+							System.out.println("Highlighting false from BoardState");
+							gameInst.highlightTargets(false);
+							gameInst.repaint();
+						}
+					}
+				}
+				else if(status.startsWith("Guess Result:"))
+				{
+					String value = status.split(":")[1];
+					System.out.println("Recieved Guess Result: "+value);
+					if(value.equals("NONE"))
+					{
+						//No guess result
+						gameInst.gameControl.setGuessResult("No new clue");
+					}
+					else
+					{
+						//Format ----GuessResult:<Card name>
+						System.out.println("Guess result is "+value);
+						gameInst.gameControl.setGuessResult(value);
+						
 					}
 				}
 
