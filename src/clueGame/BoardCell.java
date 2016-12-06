@@ -103,7 +103,7 @@ public class BoardCell
     {
       g.setColor(Color.black);
       g.setFont(new Font("Sans Serif", Font.BOLD, 12));
-      g.drawString(Board.getInstance().getRoomName(this.initial).toUpperCase(), this.x+3, this.y+PIECE_SIZE/4);
+      g.drawString(Board.getInstance().getRoomName(this.initial).toUpperCase(), this.x+5, this.y+PIECE_SIZE/4);
     }
   }
   

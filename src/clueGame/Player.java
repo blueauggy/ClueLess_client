@@ -90,15 +90,15 @@ public class Player
     
     //BEN: Added these lines to display the player name under the icon
     
-    int x_grid = x+2;
-    int y_grid = y+ (BoardCell.PIECE_SIZE-13);
+    int x_grid = x + 2;
+    int y_grid = y + (BoardCell.PIECE_SIZE-13);
     g.setColor(Color.BLACK);
     g.drawString(this.getName(), x_grid+1, y_grid+1);
     g.drawString(this.getName(), x_grid+1, y_grid-1);
     g.drawString(this.getName(), x_grid-1, y_grid+1);
     g.drawString(this.getName(), x_grid-1, y_grid-1);
     g.setColor(Color.ORANGE);
-    g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
+    g.drawString(this.getName(), x_grid, y_grid);
 
   }
   
@@ -116,16 +116,30 @@ public class Player
     g.fillOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
     g.setColor(Color.BLACK);
     g.drawOval(x, y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    int x_grid = x + 2;
+    int y_grid = y + (BoardCell.PIECE_SIZE-13);
+    g.setColor(Color.BLACK);
+    g.drawString(this.getName(), x_grid+1, y_grid+1);
+    g.drawString(this.getName(), x_grid+1, y_grid-1);
+    g.drawString(this.getName(), x_grid-1, y_grid+1);
+    g.drawString(this.getName(), x_grid-1, y_grid-1);
     g.setColor(Color.ORANGE);
-    g.drawString(this.getName(), x + 2, y + (BoardCell.PIECE_SIZE-13));
+    g.drawString(this.getName(), x_grid, y_grid);
     
     //P2
     g.setColor(p2.getColor());
     g.fillOval(x+(BoardCell.PIECE_SIZE/2), y+ (BoardCell.PIECE_SIZE/4), size/2, size/2);
     g.setColor(Color.BLACK);
     g.drawOval(x + (BoardCell.PIECE_SIZE/2), y + (BoardCell.PIECE_SIZE/4), size/2, size/2);
+    x_grid = x + 2;
+    y_grid = y + (BoardCell.PIECE_SIZE-2);
+    g.setColor(Color.BLACK);
+    g.drawString(p2.getName(), x_grid+1, y_grid+1);
+    g.drawString(p2.getName(), x_grid+1, y_grid-1);
+    g.drawString(p2.getName(), x_grid-1, y_grid+1);
+    g.drawString(p2.getName(), x_grid-1, y_grid-1);
     g.setColor(Color.ORANGE);
-    g.drawString(p2.getName(), x + 2, y + (BoardCell.PIECE_SIZE-2));
+    g.drawString(p2.getName(), x_grid, y_grid);
   }
   
   public void makeMove(Board board, Boolean highlight)
@@ -224,6 +238,7 @@ public class Player
   
   public void setForceMove(boolean forceMove)
   {
+	  System.out.println("Setting foce move for "+this.getName());
 	  this.forceMove = forceMove;
   }
   

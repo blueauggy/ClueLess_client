@@ -199,8 +199,11 @@ public class A_Chat_Client implements Runnable {
 							else
 							{
 								JOptionPane.showMessageDialog(null, "Sorry, not correct. You have lost!", "GAME OVER!", 1);
-								System.exit(0);
+								gameInst.endTurnFunctions();
 								p.setIsDead(true);
+								
+								System.exit(0);
+								
 							}
 						}
 						else if (gameInst.getClient().equals(p) && !player.equals(p.getName()))

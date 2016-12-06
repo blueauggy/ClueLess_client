@@ -219,6 +219,7 @@ public class Board
 	  //BEN: added logic to deal with allowing a player to stay in a room if moved by another player's guess
 	  if (currentPlayer.getForceMove())
 	  {
+		  System.out.println("PLAYER WAS FORCE MOVED");
 		  neighbors.add(cell);
 		  currentPlayer.setForceMove(false);
 	  }
@@ -475,16 +476,21 @@ public class Board
 			  repaint();
 		  }
 
-		  this.whoseTurn = this.whoseTurn+1;
-		  this.currentPlayer.finished();
-		  System.out.println("Sending turn "+this.whoseTurn+" to server");
-		  System.out.println("Send next turn to server");
-		  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateTurn());
-		  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateCurPlayer());
-		  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardState());
-		  
+		  endTurnFunctions();		  
 		  repaint();
 	  }
+  }
+  
+  public void endTurnFunctions()
+  {
+	  this.whoseTurn = this.whoseTurn+1;
+	  this.currentPlayer.finished();
+	  System.out.println("Sending turn "+this.whoseTurn+" to server");
+	  System.out.println("Send next turn to server");
+	  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateTurn());
+	  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateCurPlayer());
+	  //LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardStateForceMoves());
+	  LobbyClientGUI.ChatClient.STATUS_SEND(this.sendBoardState());
   }
   
 
@@ -538,6 +544,25 @@ public class Board
   public String sendBoardStateCurPlayer()
   {
 	  return "BoardState CP:"+this.currentPlayer.getName();
+  }
+  
+  public String sendBoardStateForceMoves()
+  {
+	  String output="BoardState FM:";
+	  Boolean FM = false;
+	  for (Player p : this.players)
+	  {
+		  if (p.getForceMove())
+		  {
+			  FM = true;
+			  output = output + p.getName()+",";
+		  }
+	  }
+	  if(!FM)
+	  {
+		  output = output + "NONE;";
+	  }
+	  return output.substring(0, output.length()-1);
   }
   
   public String sendGuess(Player accusingPlayer, Guess guess)
